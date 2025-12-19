@@ -15,7 +15,7 @@
     label { font-weight: 600; color: #333; }
     input[type="text"], input[type="number"]{ width:100%; padding:8px 10px; border:1px solid var(--card-border); border-radius:6px; outline:none; }
     input[type="text"]:focus, input[type="number"]:focus{ border-color:#93c5fd; box-shadow:0 0 0 3px rgba(147,197,253,0.35); }
-    h2{ margin:0 0 12px 0; text-align: center;font-size:1rem; color:#111827; }
+    h2{ margin:0 0 12px 0; text-align: left; font-size:1rem; color:#111827;}
     .container{ display:flex; gap:16px; padding:16px; align-items:stretch; }
     .panel{ background:var(--card-bg); border:1px solid var(--card-border); border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04); }
     .left{ flex:1 1 30%; min-width:380px; }
@@ -30,8 +30,8 @@
     button.neutral{ background:#e5e7eb; color:#111827; }
     button:hover { background:#BFBFBF; }
     .hint{ font-size:0.85rem; color:var(--muted); margin-top:6px; }
-    #chartWrapper{ position:relative; height:420px; }
-    #chart{ width:100%; height:100%; border-radius:8px; background:#ffffff; }
+    #chartWrapper{ width:80%; position:relative; height:420px; }
+    #chart{ height:100%; border-radius:8px; background:#ffffff; max-width:700px; }
     .legend{ display:flex; flex-wrap:wrap; gap:8px 12px; margin-top:10px; color:var(--muted); font-size:0.9rem; }
     .legend .item{ display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border:1px dashed var(--card-border); border-radius:6px; background:#f8fafc; }
     .legend .swatch{ width:14px; height:14px; border-radius:3px; display:inline-block; }
@@ -40,7 +40,6 @@
     .ligne-champ label {min-width: 200px; font-weight: 600;font-size: 16px; }
     .ligne-champ input {flex: 1; padding: 6px 8px;font-size: 10px; }
   
-
 header .header-content { display:flex; align-items:center; gap:12px; flex-wrap:nowrap; }
 header .header-content .logo { height:auto; width:auto; max-height:48px; max-width:160px; }
 @media (max-width: 600px) {
@@ -83,12 +82,15 @@ header .header-content .logo { height:auto; width:auto; max-height:48px; max-wid
 <button class="primary" id="btnMail">Envoyer par mail</button>
 <button class="danger" id="clearBtn">Tout effacer</button>
 </div>
+
 </div></section>
 <section class="panel right">
 <h2>Evolution du Chiffre d'Affaires CONTACTOLOGIE</h2>
 <div id="chartWrapper"><canvas id="chart"></canvas></div>
 </section>
 </div>
+
+
 <script>
 
     const val = (id) => {
@@ -162,10 +164,10 @@ header .header-content .logo { height:auto; width:auto; max-height:48px; max-wid
     barChart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['CA ACTUEL', 'CA PROJETÉ'],
+        labels: ['Chiffre d Affaires Actuel', 'Chiffre d Affaires Projeté'],
         datasets: [
-          { label:'CA Global',    pointStyle:'circle', backgroundColor:'#1d4ed8', borderColor:'#0b3aa7', borderWidth:2, data:[G0, Number.isFinite(G1)?G1:0] },
-          { label:'CA Lentilles', pointStyle:'circle', backgroundColor:'#f59e0b', borderColor:'#c47400', borderWidth:2, data:[L0, Number.isFinite(L1)?L1:0] }
+          { label:'CA Global', maxBarThickness: 70,   pointStyle:'circle', backgroundColor:'#1d4ed8', borderColor:'#0b3aa7', borderWidth:2, data:[G0, Number.isFinite(G1)?G1:0] },
+          { label:'CA Lentilles', maxBarThickness: 70, pointStyle:'circle', backgroundColor:'#f59e0b', borderColor:'#c47400', borderWidth:2, data:[L0, Number.isFinite(L1)?L1:0] }
         ]
       },
       options: {
