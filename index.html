@@ -22,7 +22,7 @@
     .right{ flex:1 1 70%; min-width:420px; }
     .form-row{ display:grid; grid-template-columns: 1fr 160px; gap:8px; margin-bottom:12x; }
     .form-row.readonly input{ background:#f8fafc; color:#6b7280; }
-    .toolbar{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; align-items:center; }
+    .toolbar{ display:flex; gap:10px; margin-top:50px; flex-wrap:wrap; align-items:center; text-align:center;}
     .toolbar .grow{ flex:1; }
     button{ padding:8px 12px; border:1px solid var(--card-border); border-radius:8px; background:#f3f4f6; cursor:pointer; font-weight:600; width: 100% }
     button.primary { background: #005FB8; color:#fff; border-color: var(--primary); }
@@ -30,8 +30,8 @@
     button.neutral{ background:#e5e7eb; color:#111827; }
     button:hover { background:#BFBFBF; }
     .hint{ font-size:0.85rem; color:var(--muted); margin-top:6px; }
-    #chartWrapper{ width:80%; position:relative; height:420px; }
-    #chart{ height:100%; border-radius:8px; background:#ffffff; max-width:700px; }
+    #chartWrapper{ width:100%; position:relative; height:500px; }
+    #chart{ height:100%; border-radius:8px; background:#ffffff; }
     .legend{ display:flex; flex-wrap:wrap; gap:8px 12px; margin-top:10px; color:var(--muted); font-size:0.9rem; }
     .legend .item{ display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border:1px dashed var(--card-border); border-radius:6px; background:#f8fafc; }
     .legend .swatch{ width:14px; height:14px; border-radius:3px; display:inline-block; }
@@ -39,15 +39,27 @@
     .ligne-champ {display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 16px; }
     .ligne-champ label {min-width: 200px; font-weight: 600;font-size: 16px; }
     .ligne-champ input {flex: 1; padding: 6px 8px;font-size: 10px; }
-  
-header .header-content { display:flex; align-items:center; gap:12px; flex-wrap:nowrap; }
-header .header-content .logo { height:auto; width:auto; max-height:48px; max-width:160px; }
-@media (max-width: 600px) {
-  header .header-content .logo { max-height:36px; max-width:120px; }
-  header .header-content h1 { font-size:1rem; }
-}
+    /* en tete + image */ 
+    header .header-content { display:flex; align-items:center; gap:12px; flex-wrap:nowrap; }
+    header .header-content .logo { height:auto; width:auto; max-height:48px; max-width:160px; }
+    @media (max-width: 600px) {header .header-content .logo { max-height:36px; max-width:120px; } header .header-content h1 { font-size:1rem; } }
+ /* Colonne droite = nouvelle section a droite */
+    aside {flex: 0 0 200px; border-left: 1px solid #e5e7eb; padding-left: 16px; text-align:center; }
+    .right-card {background: #fafafa;border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px;height: 580px; }
+    .right-card h3 {margin: 0 0 8px 0; font-size: 1rem; font-weight: 600; color: #374151; }
+    .right-card img { display: block; width: 100%; height: auto; border-radius: 6px; }
+
+    /* En-tête et sections à gauche */
+    header h1 {margin: 0 0 4px 0; font-size: 1.5rem; }
+    header p { margin: 0 0 16px 0; color: #6b7280; }
+    section { margin-bottom: 24px; }
+    h2, h3 { margin-top: 0; text-align: center;}
+
+
 </style>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script><script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script></head>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+</head>
 <body>
 <header><div class="header-content"><img alt="CooperVision" class="logo" src="logo.png"/><h1>COOPERVISION - Simulateur CA contactologie</h1></div></header>
 <div class="container">
@@ -75,22 +87,42 @@ header .header-content .logo { height:auto; width:auto; max-height:48px; max-wid
 <label for="caLentillesProjete">CA Lentilles - Projeté (€)</label>
 <input disabled="" id="caLentillesProjete" placeholder="Calcul automatique" type="number"/>
 </div>
-<div class="toolbar">
+
 <!-- Ajout des boutons -->
-<button class="primary" id="btnUpdate">Actualiser les données + graphique</button>
-<button class="primary" id="btnSaveBar">Enregistrer le graphique</button>
+<div class="toolbar">
+<button class="primary" id="btnUpdate">Actualiser les données</button>
+<!-- <button class="primary" id="btnSaveBar">Enregistrer le graphique</button> -->
 <button class="primary" id="btnMail">Envoyer par mail</button>
 <button class="danger" id="clearBtn">Tout effacer</button>
 </div>
-
+<!-- Ajout du graphique -->
 </div></section>
 <section class="panel right">
-<h2>Evolution du Chiffre d'Affaires CONTACTOLOGIE</h2>
+<h3>Evolution du Chiffre d'Affaires CONTACTOLOGIE</h3>
 <div id="chartWrapper"><canvas id="chart"></canvas></div>
 </section>
+
+<!-- ajout card a doite  + image -->
+ <aside>
+   <div class="right-card"><img alt="CooperVision" class="promo" src="image1.png"/>
+
+     <p style="text-align:center; color:rgba(255, 82, 14, 0.8);; font-weight:bold;" >CA Lentilles 
+     <input type="text" id="EvoCaLentilles" disabled 
+     style="font-weight: bold;text-align:right; border:3px solid rgba(255, 82, 14, 0.8);border-radius: 8px;background: rgba(255,127,14,0.80);">
+     <p style="text-align:center; color:rgba(18, 43, 182, 0.6);; font-weight:bold;" >CA Total 
+     <input type="text" id="EvoCaGlobal" disabled
+     style="font-weight: bold;text-align:right;border:3px solid rgba(18, 43, 182, 0.6); border-radius: 8px; background: rgba(31,119,180,0.60);">
+     </div >      
+
+  
+</div>
+</aside>
 </div>
 
+   
 
+
+<!-- *********************************************************************************** -->
 <script>
 
     const val = (id) => {
@@ -119,10 +151,14 @@ header .header-content .logo { height:auto; width:auto; max-height:48px; max-wid
       const caLens = parseFloat(document.getElementById('caLentillesActuel').value || '0');
       const pct = parseFloat(document.getElementById('objectifPct').value || '0');
       const factor = pct //1 + (pct/100);
-      const caLensProjete = caGlobal * pct //(factor - 1);
+      const caLensProjete = caGlobal * (pct/100) //(factor - 1);
       const caMagProjete = (caLensProjete - caLens) * 4 + caGlobal;
+      const EvoCaGlobal = caMagProjete -caGlobal
+      const EvoCaLentilles = caLensProjete-caLens
       document.getElementById('caGlobalProjete').value = fmtEuro(caMagProjete);
       document.getElementById('caLentillesProjete').value = fmtEuro(caLensProjete);
+      document.getElementById('EvoCaGlobal').value = fmtEuro(EvoCaGlobal);
+      document.getElementById('EvoCaLentilles').value = fmtEuro(EvoCaLentilles);
     }
 
 
@@ -138,7 +174,6 @@ header .header-content .logo { height:auto; width:auto; max-height:48px; max-wid
      });
 
   </script>
-
 <script>
 (function(){
   // Register plugin
@@ -147,6 +182,7 @@ header .header-content .logo { height:auto; width:auto; max-height:48px; max-wid
   function fmtEUR(v){ try { return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v);} catch(e){ return v; } }
   // Force projected fields as text
   ['caGlobalProjete','caLentillesProjete'].forEach(function(id){ const el=document.getElementById(id); if(el){ el.setAttribute('type','text'); el.setAttribute('disabled','true'); }});
+ 
   // Compute projections
   function computeProjections(){
     const G0 = parseFloat(document.getElementById('caGlobalActuel').value || '0');
@@ -155,7 +191,9 @@ header .header-content .logo { height:auto; width:auto; max-height:48px; max-wid
     const t = Math.max(0, tPct) / 100; 
     const N0 = Math.max(0, G0 - L0);
     let G1 = NaN, L1 = NaN; if (t < 1) { L1 = t * G0; G1 = (L1 - L0) * 4 + G0; }
-    return { G0, L0, G1, L1 };
+      const EvoCaGlobal = G1 - G0
+      const EvoCaLentilles = L1-L0
+    return { G0, L0, G1, L1, EvoCaGlobal,EvoCaLentilles };
   }
   let barChart;
   function buildChart(){
