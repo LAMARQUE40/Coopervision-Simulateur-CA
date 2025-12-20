@@ -98,7 +98,7 @@
 <!-- Ajout du graphique -->
 </div></section>
 <section class="panel right">
-<h3>Evolution du Chiffre d'Affaires CONTACTOLOGIE</h3>
+<h3>Evolution du Chiffre d'Affaires</h3>
 <div id="chartWrapper"><canvas id="chart"></canvas></div>
 </section>
 
@@ -114,12 +114,9 @@
      style="font-weight: bold;text-align:right;border:3px solid rgba(18, 43, 182, 0.6); border-radius: 8px; background: rgba(31,119,180,0.60);">
      </div >      
 
-  
 </div>
 </aside>
 </div>
-
-   
 
 
 <!-- *********************************************************************************** -->
@@ -173,6 +170,21 @@
       recalculerProjections();
      });
 
+   //Bouton envoyer un mail,
+    document.getElementById('btnMail').addEventListener('click', () => {
+      const subject = encodeURIComponent('COOPERVISION - Simulation de l évolution de votre Chiffre d Affaires');  
+      const body = encodeURIComponent(
+        `Bonjour,\n\nVeuillez trouver les valeurs projetées de votre Chiffres d Affaires :
+        \n- Evolution du chiffre d'affaires contactologie :
+        \n- Evolution du chiffre d'affaires global du magasin : 
+        \n\nN'hésitez pas à revenir vers moi pour toute question.\n\nBien cordialement.`
+      );
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    });
+
+
+    
+
   </script>
 <script>
 (function(){
@@ -223,6 +235,7 @@
       }
     });
   }
+
   function updateChart(){
     const { G0, L0, G1, L1 } = computeProjections();
     const gEl=document.getElementById('caGlobalProjete'); const lEl=document.getElementById('caLentillesProjete');
@@ -232,7 +245,10 @@
   ['caGlobalActuel','caLentillesActuel','objectifPct'].forEach(function(id){ const el=document.getElementById(id); if(el) el.addEventListener('input', updateChart); });
   const btnUpdate=document.getElementById('btnUpdate'); if(btnUpdate) btnUpdate.addEventListener('click', updateChart);
   document.addEventListener('DOMContentLoaded', function(){ buildChart(); updateChart(); });
-})();
+  })();
+    
+
 </script>
 </body>
 </html>
+
