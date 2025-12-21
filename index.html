@@ -44,9 +44,9 @@
     header .header-content .logo { height:auto; width:auto; max-height:48px; max-width:160px; }
     @media (max-width: 600px) {header .header-content .logo { max-height:36px; max-width:120px; } header .header-content h1 { font-size:1rem; } }
  /* Colonne droite = nouvelle section a droite */
-    aside {flex: 0 0 200px; border-left: 1px solid #e5e7eb; padding-left: 16px; text-align:center; }
-    .right-card {background: #fafafa;border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px;height: 580px; }
-    .right-card h3 {margin: 0 0 8px 0; font-size: 1rem; font-weight: 600; color: #374151; }
+    aside {flex: 0 0 180px; border-left: 1px solid #e5e7eb; padding-left: 16px; text-align:center; }
+    .right-card {background: #ffffff;border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px;height: 580px; }
+    .right-card h3 {margin: 0 0 8px 0; font-size: 18px; font-weight: 800; color: #374151; }
     .right-card img { display: block; width: 100%; height: auto; border-radius: 6px; }
 
     /* En-tête et sections à gauche */
@@ -54,7 +54,8 @@
     header p { margin: 0 0 16px 0; color: #6b7280; }
     section { margin-bottom: 24px; }
     h2, h3 { margin-top: 0; text-align: center;}
-
+    #EvoCaLentilles { font-size: 18px; }
+    #EvoCaGlobal { font-size: 18px; }
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -81,11 +82,11 @@
 </div>
 <div class="ligne-champ">
 <label for="caGlobalProjete">CA Global - Projeté (€)</label>
-<input disabled="" id="caGlobalProjete" placeholder="Calcul automatique" type="number"/>
+<input disabled="" id="caGlobalProjete" placeholder="Calcul automatique" type="text"/>
 </div>
 <div class="ligne-champ">
 <label for="caLentillesProjete">CA Lentilles - Projeté (€)</label>
-<input disabled="" id="caLentillesProjete" placeholder="Calcul automatique" type="number"/>
+<input disabled="" id="caLentillesProjete" placeholder="Calcul automatique" type="text"/>
 </div>
 
 <!-- Ajout des boutons -->
@@ -119,6 +120,7 @@
 </div>
 
 
+
 <!-- *********************************************************************************** -->
 <script>
 
@@ -136,8 +138,9 @@
    //fonctions,
     function fmtEuro(v){
       if (isNaN(v) || v === null) return '';
-      return new Intl.NumberFormat('fr-FR', { style:'currency', currency:'EUR', maximumFractionDigits:0 }).format(v);
-     }
+      const formatted = Intl.NumberFormat('fr-FR', { style:'currency', currency:'EUR', maximumFractionDigits:0 }).format(v);
+      return (v > 0 ? "+ " : "") + formatted; };
+    
     function fmtPercent(v){
       if (isNaN(v) || v === null) return '';
       return new Intl.NumberFormat('fr-FR', { style:'percent', maximumFractionDigits:0 }).format(v);
@@ -156,14 +159,19 @@
       document.getElementById('caLentillesProjete').value = fmtEuro(caLensProjete);
       document.getElementById('EvoCaGlobal').value = fmtEuro(EvoCaGlobal);
       document.getElementById('EvoCaLentilles').value = fmtEuro(EvoCaLentilles);
+      return { caGlobal, caLens, caLensProjete, caMagProjete, EvoCaGlobal, EvoCaLentilles };
     }
-
 
     //Bouton effacer,
       document.getElementById('clearBtn').addEventListener('click', () => {
       const inputs = document.querySelectorAll("input");
       inputs.forEach(input => input.value = "");
+      //const { G0, L0, G1, L1 } = computeProjections();
+      //const {caGlobal, EvoCaGlobal, EvoCaLentilles } = recalculerProjections();
+      //buildChart()
+      //updateChart();
      });
+
 
     //Bouton actualiser,
       document.getElementById('btnUpdate').addEventListener('click', () => {
@@ -172,28 +180,23 @@
 
    //Bouton envoyer un mail,
     document.getElementById('btnMail').addEventListener('click', () => {
+      const { EvoCaGlobal, EvoCaLentilles } = recalculerProjections();
       const subject = encodeURIComponent('COOPERVISION - Simulation de l évolution de votre Chiffre d Affaires');  
       const body = encodeURIComponent(
         `Bonjour,\n\nVeuillez trouver les valeurs projetées de votre Chiffres d Affaires :
-        \n- Evolution du chiffre d'affaires contactologie :
-        \n- Evolution du chiffre d'affaires global du magasin : 
+        \n- Evolution du chiffre d'affaires contactologie : ${fmtEuro(EvoCaLentilles)}
+        \n- Evolution du chiffre d'affaires global du magasin : ${fmtEuro(EvoCaGlobal)}
         \n\nN'hésitez pas à revenir vers moi pour toute question.\n\nBien cordialement.`
       );
       window.location.href = `mailto:?subject=${subject}&body=${body}`;
     });
 
-
-    
-
-  </script>
-<script>
 (function(){
   // Register plugin
   if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') { Chart.register(ChartDataLabels); }
   // Format EUR
   function fmtEUR(v){ try { return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v);} catch(e){ return v; } }
-  // Force projected fields as text
-  ['caGlobalProjete','caLentillesProjete'].forEach(function(id){ const el=document.getElementById(id); if(el){ el.setAttribute('type','text'); el.setAttribute('disabled','true'); }});
+ 
  
   // Compute projections
   function computeProjections(){
@@ -238,7 +241,8 @@
 
   function updateChart(){
     const { G0, L0, G1, L1 } = computeProjections();
-    const gEl=document.getElementById('caGlobalProjete'); const lEl=document.getElementById('caLentillesProjete');
+    const gEl=document.getElementById('caGlobalProjete'); 
+    const lEl=document.getElementById('caLentillesProjete');
     if(gEl) gEl.value = Number.isFinite(G1)?fmtEUR(G1):''; if(lEl) lEl.value = Number.isFinite(L1)?fmtEUR(L1):'';
     if(barChart){ barChart.data.datasets[0].data=[G0, Number.isFinite(G1)?G1:0]; barChart.data.datasets[1].data=[L0, Number.isFinite(L1)?L1:0]; barChart.update(); }
   }
