@@ -39,6 +39,7 @@
     .ligne-champ {display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 16px; }
     .ligne-champ label {min-width: 200px; font-weight: 600;font-size: 16px; }
     .ligne-champ input {flex: 1; padding: 6px 8px;font-size: 10px; }
+    .blinkable input { order: 2px solid #ccc;transition: background-color 0.2s, border-color 0.2s;}
     /* en tete + image */ 
     header .header-content { display:flex; align-items:center; gap:12px; flex-wrap:nowrap; }
     header .header-content .logo { height:auto; width:auto; max-height:48px; max-width:160px; }
@@ -56,6 +57,15 @@
     h2, h3 { margin-top: 0; text-align: center;}
     #EvoCaLentilles { font-size: 18px; }
     #EvoCaGlobal { font-size: 18px; }
+   .hidden { display: none; }
+
+    /*Animation reset data */
+    .reset-anim { animation: resetFlash 0.4s ease-out; } @keyframes resetFlash { 0% { background-color: rgba(255, 0, 0, 0.15); } 100% { background-color: transparent; } }
+    .blink { animation: blink-red 0.4s linear 3;}
+   @keyframes blink-red {0%, 100% {background-color: white; border-color: red; } 50% {background-color: red; border-color: darkred; } }
+
+
+
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -96,11 +106,17 @@
 <button class="primary" id="btnMail">Envoyer par mail</button>
 <button class="danger" id="clearBtn">Tout effacer</button>
 </div>
-<!-- Ajout du graphique -->
 </div></section>
+<!-- Ajout du graphique -->
 <section class="panel right">
 <h3>Evolution du Chiffre d'Affaires</h3>
-<div id="chartWrapper"><canvas id="chart"></canvas></div>
+ <div id="chartWrapper">
+   <canvas id="chart">
+   </canvas>
+  </div>
+ <img id="img2" src="image2.png" class="hidden"
+ style="position:absolute;top:250px;left: 50%;width: 160px;height: auto;pointer-events: none;opacity: 0.8;">
+
 </section>
 
 <!-- ajout card a doite  + image -->
@@ -164,12 +180,13 @@
 
     //Bouton effacer,
       document.getElementById('clearBtn').addEventListener('click', () => {
+        
       const inputs = document.querySelectorAll("input");
       inputs.forEach(input => input.value = "");
-      //const { G0, L0, G1, L1 } = computeProjections();
-      //const {caGlobal, EvoCaGlobal, EvoCaLentilles } = recalculerProjections();
-      //buildChart()
-      //updateChart();
+      
+      const { G0, L0, G1, L1 } = computeProjections();
+      console.log("Bouton cliqué !");
+      updateChart();
      });
 
 
@@ -235,7 +252,9 @@
           tooltip: { callbacks: { label: function(ctx){ return ctx.dataset.label + ': ' + fmtEUR(ctx.parsed.y); } } }
         },
         scales: { y: { beginAtZero:true, ticks:{ callback:function(v){ return fmtEUR(v); } } }, x: { grid: { display:false } } }
+          
       }
+
     });
   }
 
@@ -249,8 +268,24 @@
   ['caGlobalActuel','caLentillesActuel','objectifPct'].forEach(function(id){ const el=document.getElementById(id); if(el) el.addEventListener('input', updateChart); });
   const btnUpdate=document.getElementById('btnUpdate'); if(btnUpdate) btnUpdate.addEventListener('click', updateChart);
   document.addEventListener('DOMContentLoaded', function(){ buildChart(); updateChart(); });
+
+  
+ const btnClear = document.getElementById('clearBtn');
+  if (btnClear) btnClear.addEventListener('click', function () {
+  document.querySelectorAll("input").forEach(input => input.value = "");   // Efface les inputs
+  updateChart(); 
+   
+
+  })
+  
   })();
     
+
+
+
+
+
+
 
 </script>
 </body>
