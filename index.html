@@ -79,7 +79,7 @@
     </div>
   </header>
 
-<div id="print-area">
+
   <div class="container">
 
     <section class="panel left">
@@ -119,11 +119,13 @@
       </div>
     </section>
 
+    <div id="print-area">
     <section class="panel right">
       <h3>Evolution du Chiffre d'Affaires</h3>
       <div id="chartWrapper">
         <canvas id="chart"></canvas>
       </div>
+      </div>   <!-- fin print-area -->
       <img id="img2" src="image2.png" class="hidden"
       style="position:absolute;top:250px;left:50%;width:160px;height:auto;pointer-events:none;opacity:0.8;">
     </section>
@@ -146,7 +148,7 @@
     </aside>
 
   </div> <!-- fin container -->
-</div>   <!-- fin print-area -->
+
 
 
 <!-- *********************************************************************************** -->
@@ -203,7 +205,7 @@
    //Bouton envoyer un mail,
      document.getElementById('btnMail').addEventListener('click', () => {
       // genere image
-     const zone = document.getElementById('chartWrapper');
+     const zone = document.getElementById('print-area');
      html2canvas(zone).then(canvas => {
      const base64Image = canvas.toDataURL("image/png").split(',')[1];
      const repo = "LAMARQUE40/graphique-mail";
@@ -232,7 +234,6 @@
     .catch(err => console.error(err));
   
       // fin image
-
 
       const { EvoCaGlobal, EvoCaLentilles } = recalculerProjections();
       const subject = encodeURIComponent('COOPERVISION - Simulation de l évolution de votre Chiffre d Affaires');  
