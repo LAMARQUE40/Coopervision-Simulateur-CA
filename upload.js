@@ -4,7 +4,8 @@ import fetch from "node-fetch";
 const app = express();
 app.use(express.json({ limit: "10mb" }));
 
-const TOKEN = process.env.GITHUB_TOKEN; // sécurisé
+const TOKEN = "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"
+
 const REPO = "LAMARQUE40/graphique-mail";
 const BRANCH = "main";
 
