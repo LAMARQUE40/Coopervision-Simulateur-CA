@@ -205,49 +205,52 @@
    //Bouton envoyer un mail,
      document.getElementById('btnMail').addEventListener('click', () => {
       // genere image
-     const zone = document.getElementById('print-area');
-     html2canvas(zone).then(canvas => {
-     const base64Image = canvas.toDataURL("image/png").split(',')[1];
-     const repo = "LAMARQUE40/graphique-mail";
-     const path = generateUniqueFilename(); // chemin dans ton repo
-     const branch = "main"; // ou master
-     const token = "T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";
+        const zone = document.getElementById('print-area');
+        html2canvas(zone).then(canvas => {
+        const base64Image = canvas.toDataURL("image/png").split(',')[1];
+        const repo = "LAMARQUE40/graphique-mail";
+        const path = generateUniqueFilename(); 
+        const branch = "main"; // ou master
+        const token = "T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";
 
-    fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
-      method: "PUT",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        message: "Upload automatique de l'image",
-        content: base64Image,
-        branch: branch
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
-      //const rawUrl = data.content.download_url;
-      console.log("Image envoyée sur GitHub :", data);
-      alert("Image enregistrée sur GitHub !");
-    })
-    .catch(err => console.error(err));
-  
-      // fin image
-
+        fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
+          method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: "Upload automatique de l'image",
+            content: base64Image,
+            branch: branch
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          //const rawUrl = `https://raw.githubusercontent.com/${repo}/${branch}/${data.content.path}`; //const rawUrl = data.content.download_url;
+          console.log("Image envoyée sur GitHub :", data);
+          //console.log("URL RAW :", rawUrl);
+          alert("Graphique enregistré !");
+        })
+        .catch(err => console.error(err));
+      
+      // Creation du mail  
       const { EvoCaGlobal, EvoCaLentilles } = recalculerProjections();
       const subject = encodeURIComponent('COOPERVISION - Simulation de l évolution de votre Chiffre d Affaires');  
       const body = encodeURIComponent(
         `Bonjour,\n\nVeuillez trouver les valeurs projetées de votre Chiffres d Affaires :
-        \n- Evolution du chiffre d'affaires contactologie : ${fmtEuro(EvoCaLentilles)}
-        \n- Evolution du chiffre d'affaires global du magasin : ${fmtEuro(EvoCaGlobal)}
-        \n\nVoici le lien pour accéder à votre simulation :
-        \n\nN'hésitez pas à revenir vers moi pour toute question.\n\nBien cordialement.`
+        \n     - Evolution du chiffre d'affaires contactologie : ${fmtEuro(EvoCaLentilles)}
+        \n     - Evolution du chiffre d'affaires global du magasin : ${fmtEuro(EvoCaGlobal)}
+        \n\nVoici le lien pour accéder à votre simulation : 
+        \n\nN'hésitez pas à revenir vers moi pour toute question.
+        \n\nBien cordialement.`
         
        );
       window.location.href = `mailto:?subject=${subject}&body=${body}`;
      });
-});
+    });
+
+
    //*******************************************************************
    //fonctions,
      function fmtEuro(v){
