@@ -69,6 +69,9 @@
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
+
+
+
 </head>
 
 <body>
@@ -358,6 +361,21 @@
 
  
 </script>
+
+<script>
+    let txt = "COOPERVISION - Simulateur CA contactologie !!!  ";
+    let pos = 0;
+
+    function scrollTitle() {
+        document.title = txt.substring(pos) + txt.substring(0, pos);
+        pos = (pos + 1) % txt.length;
+        setTimeout(scrollTitle, 300); // vitesse (ms)
+    }
+
+    scrollTitle();
+</script>
+
+
 </body>
 </html>
 
