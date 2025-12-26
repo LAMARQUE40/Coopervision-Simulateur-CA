@@ -227,21 +227,21 @@
         })
         .then(res => res.json())
         .then(data => {
-          //const rawUrl = `https://raw.githubusercontent.com/${repo}/${branch}/${data.content.path}`; //const rawUrl = data.content.download_url;
-          console.log("Image envoyée sur GitHub :", data);
+           console.log("Image envoyée sur GitHub :", data);
           //console.log("URL RAW :", rawUrl);
           alert("Graphique enregistré !");
         })
         .catch(err => console.error(err));
       
-      // Creation du mail  
+      // Creation du mail 
+      const rawUrl = `https://lamarque40.github.io/graphique-email/${path}`; //const rawUrl = data.content.download_url;
       const { EvoCaGlobal, EvoCaLentilles } = recalculerProjections();
       const subject = encodeURIComponent('COOPERVISION - Simulation de l évolution de votre Chiffre d Affaires');  
       const body = encodeURIComponent(
         `Bonjour,\n\nVeuillez trouver les valeurs projetées de votre Chiffres d Affaires :
         \n     - Evolution du chiffre d'affaires contactologie : ${fmtEuro(EvoCaLentilles)}
         \n     - Evolution du chiffre d'affaires global du magasin : ${fmtEuro(EvoCaGlobal)}
-        \n\nVoici le lien pour accéder à votre simulation : 
+        \n\nVoici le lien pour accéder à votre simulation :  ${rawUrl}
         \n\nN'hésitez pas à revenir vers moi pour toute question.
         \n\nBien cordialement.`
         
