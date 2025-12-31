@@ -12,9 +12,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Create images folder if missing
+        run: mkdir -p images
+
       - name: Decode and save image
         run: |
-          echo "${{ github.event.client_payload.content }}" | base64 --decode > ${{ github.event.client_payload.filename }}
+          echo "${{ github.event.client_payload.content }}" | base64 --decode > images/${{ github.event.client_payload.filename }}
 
       - name: Commit and push image
         env:
@@ -22,6 +25,6 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add ${{ github.event.client_payload.filename }}
+          git add images/${{ github.event.client_payload.filename }}
           git commit -m "Upload image via secure proxy"
           git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }} HEAD:main
