@@ -1,0 +1,31 @@
+name: Upload Proxy
+
+on:
+  repository_dispatch:
+    types: [upload-image]
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Decode and save image
+        run: |
+          echo "${{ github.event.client_payload.content }}" | base64 --decode > ${{ github.event.client_payload.filename }}
+
+      - name: Commit and push
+        env:
+          TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add ${{ github.event.client_payload.filename }}
+          git commit -m "Upload image via proxy"
+          git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }} HEAD:main
+
+      - name: Output URL
+        run: |
+          echo "URL=https://raw.githubusercontent.com/${{ github.repository }}/main/${{ github.event.client_payload.filename }}" >> $GITHUB_OUTPUT
