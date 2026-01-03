@@ -258,15 +258,10 @@
       alert("Veuillez saisir une adresse email."); 
       document.querySelector("button.primary").classList.remove("active"); return;
      }
-   
 fetch("https://script.google.com/macros/s/AKfycbzf-R1S-kKqymheu_04PUAaM-LXpmkpHljpkXpiEj63cSmsBoi915INt8ujkor6YOer/exec", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    email: emailClient,
-    image: base64image,
-    message: message
-  })
+  body: JSON.stringify({ test: "hello" })
 })
 .then(r => r.text())
 .then(console.log);
