@@ -248,39 +248,29 @@
     // Génération de l'image
     const canvas = await html2canvas(zone);
     const base64image = canvas.toDataURL("image/png").split(',')[1]; 
+    const message = "bonjour, voici un email";
 
+    function doPost(e) { return ContentService.createTextOutput( JSON.stringify(e, null, 2) ); }
+    
     // Récupération de l'adresse email saisie 
     const emailClient = document.getElementById('adresseclient').value.trim(); 
     if (!emailClient) { 
       alert("Veuillez saisir une adresse email."); 
       document.querySelector("button.primary").classList.remove("active"); return;
      }
-
-    const subject = 'COOPERVISION - Simulation de l’évolution de votre Chiffre d’Affaires';
-    const evoca1 = fmtEuro(EvoCaLentilles);
-    const evoca2 = fmtEuro(EvoCaGlobal);
    
-    // Envoi via EmailJS
-        emailjs.send("service_v9xbctl", "template_8fk5oop", {
-            to_email: emailClient,
-            subject: subject,
-            EvoCaLent: evoca1,
-            EvoCaGlo: evoca2,
-            //attachment: base64image, // pièce jointe en base64
-            //filename: "simulation.png"
-        })
-        .then(() => {
-          alert(`Email envoyé à ${emailClient} avec succès !!!`);
-         })
-        .catch((error) => { 
-          setTimeout(() => { 
-            console.error("Erreur EmailJS :", error); 
-            alert("Erreur lors de l’envoi du mail."); }, 1000); // délai en millisecondes
-         })
+fetch("https://script.google.com/macros/s/AKfycbzf-R1S-kKqymheu_04PUAaM-LXpmkpHljpkXpiEj63cSmsBoi915INt8ujkor6YOer/exec", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    email: emailClient,
+    image: base64image,
+    message: message
+  })
+})
+.then(r => r.text())
+.then(console.log);
 
-        .finally(() => {
-            document.querySelector("button.primary").classList.remove("active");
-         });
       });
 
    //*******************************************************************
