@@ -71,7 +71,10 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script> emailjs.init("FNcKk_I33a_zJysL4"); </script>
 
 
 
@@ -117,10 +120,13 @@
         </div>
 
         <div class="toolbar">
+          <button class="danger" id="clearBtn">Effacer les données</button>
           <button class="hidden" id="btnUpdate">Actualiser les donnees</button> 
           <button class="record" id="btnSaveBar">Enregistrer le graphique en local</button>
+         <hr style="width:100%; border:0; border-top:2px solid ; margin:15px auto;"> 
+          <input id="adresseclient" type="text" style="text-align:center" placeholder="Adresse mail du client : exemple@coopervision.com ">
           <button class="primary" id="btnMail">Envoyer par mail</button>
-          <button class="danger" id="clearBtn">Tout effacer</button>
+          
         </div>
       </div>
     </section>
@@ -215,70 +221,67 @@
      const zone = document.getElementById('print-area');
      console.log('zone =', zone); // <--- important
 
-      html2canvas(zone,).then(canvas => {
-      const url = canvas.toDataURL("image/png");
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = generateUniqueFilename(); //generation du nom
-      a.click();
+     html2canvas(zone, {
+      scale: 4, // augmente la résolution
+      useCORS: true 
+      }).then(canvas => {
+          const url = canvas.toDataURL("image/png");
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = generateUniqueFilename();
+          a.click();
       });
+
       setTimeout(() => { document.querySelector("button.record").classList.remove("active"); }, 1000);
      });
 
 
 
    //*******************************************************************
+   // Bouton envoyer Email
     document.getElementById('btnMail').addEventListener('click', async () => {
     document.querySelector("button.primary").classList.add("active");
-    const zone = document.getElementById('print-area');
 
+    const { EvoCaGlobal, EvoCaLentilles } = recalculerProjections();
+    const zone = document.getElementById('print-area');
+   
     // Génération de l'image
     const canvas = await html2canvas(zone);
-    const base64image = canvas.toDataURL("image/png").split(',')[1];
-    const path = generateUniqueFilename();
+    const base64image = canvas.toDataURL("image/png").split(',')[1]; 
 
-    // === CONFIGURATION === 
-    const token = "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";
-    const owner = "LAMARQUE40";
-    const repro = "graphique";
-    const lien = `https://raw.githubusercontent.com/${owner}/${repro}/main/${path}`;
+    // Récupération de l'adresse email saisie 
+    const emailClient = document.getElementById('adresseclient').value.trim(); 
+    if (!emailClient) { 
+      alert("Veuillez saisir une adresse email."); 
+      document.querySelector("button.primary").classList.remove("active"); return;
+     }
 
-    // Appel API GitHub
-      const response = await fetch(`https://api.github.com/repos/${owner}/${repro}/contents/${path}`, {
-        method: "PUT",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          message: "Upload via formulaire HTML",
-          content: base64image
-        })
-      });
-
-      const data = await response.json();
-
-      // Creation du mail 
-      const { EvoCaGlobal, EvoCaLentilles } = recalculerProjections();
-      const subject = encodeURIComponent('COOPERVISION - Simulation de l évolution de votre Chiffre d Affaires');  
-      const body = encodeURIComponent(
-        `Bonjour,\n\nVeuillez trouver les valeurs projetées de votre Chiffres d Affaires :
-        \n     - Evolution du chiffre d'affaires contactologie : ${fmtEuro(EvoCaLentilles)}
-        \n     - Evolution du chiffre d'affaires global du magasin : ${fmtEuro(EvoCaGlobal)}
-        \n\nVeuillez copier le lien ci-dessous dans la barre de votre navigateur internet pour accéder à votre simulation : 
-        \n ${lien}
-        \n\nN'hésitez pas à revenir vers moi pour toute question.
-        \n\nBien cordialement.`
-       );
-      
-      // ouverture du mail
-       window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    const subject = 'COOPERVISION - Simulation de l’évolution de votre Chiffre d’Affaires';
+    const evoca1 = fmtEuro(EvoCaLentilles);
+    const evoca2 = fmtEuro(EvoCaGlobal);
    
-      // retour visuel bouton
-       setTimeout(() => { document.querySelector("button.primary").classList.remove("active"); }, 1000);
-    
-      });
+    // Envoi via EmailJS
+        emailjs.send("service_v9xbctl", "template_8fk5oop", {
+            to_email: emailClient,
+            subject: subject,
+            EvoCaLent: evoca1,
+            EvoCaGlo: evoca2,
+            //attachment: base64image, // pièce jointe en base64
+            //filename: "simulation.png"
+        })
+        .then(() => {
+          alert(`Email envoyé à ${emailClient} avec succès !!!`);
+         })
+        .catch((error) => { 
+          setTimeout(() => { 
+            console.error("Erreur EmailJS :", error); 
+            alert("Erreur lors de l’envoi du mail."); }, 1000); // délai en millisecondes
+         })
 
+        .finally(() => {
+            document.querySelector("button.primary").classList.remove("active");
+         });
+      });
 
    //*******************************************************************
    //fonctions,
